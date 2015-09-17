@@ -64,7 +64,6 @@ var NoteItem = React.createClass({
           <button className="distroy" onClick={this.handleDestroy}></button>
         </div>
       </li>
-
     )
   }
 });
