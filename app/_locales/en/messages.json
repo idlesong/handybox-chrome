@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "handybox",
+    "description": "The name of the application"
+  },
+  "appDescription": {
+    "message": "toolset",
+    "description": "The description of the application"
+  }
+}
