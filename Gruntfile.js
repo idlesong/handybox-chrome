@@ -35,6 +35,10 @@ module.exports = function (grunt) {
         files: ['bower.json'],
         tasks: ['bowerInstall']
       },
+      react: {
+          files: ['app/react/*.jsx'],
+          tasks: ['browserify']
+      },
       js: {
         files: ['<%= config.srcScript %>/{,*/}*.js'],
         tasks: ['jshint', 'babel'],
@@ -88,6 +92,18 @@ module.exports = function (grunt) {
             'test',
             '<%= config.app %>'
           ]
+        }
+      }
+    },
+
+    // browserify react files
+    browserify: {
+      dist: {
+        options: {
+          transform: [["babelify", { "stage": 0 }]]
+        },
+        files: {
+          './app/scripts/client-bundle.js': './app/react/app.jsx'
         }
       }
     },
