@@ -97,11 +97,31 @@ var NoteHeader = React.createClass({
       'header',
       { id: 'header' },
       React.createElement(
-        'h1',
+        'div',
+        { className: 'input-group' },
+        React.createElement(
+          'span',
+          { className: 'input-group-addon', id: 'basic-addon1' },
+          React.createElement('i', { className: 'fa fa-sticky-note-o' })
+        ),
+        React.createElement('input', { id: 'new-note', className: 'form-control', placeholder: 'keyin something ...', autoFocus: true, onKeyUp: this.handleValueChange })
+      ),
+      React.createElement(
+        'div',
+        null,
+        React.createElement('i', { className: 'fa fa-sticky-note-o fa-lg' }),
+        ' |',
+        React.createElement('i', { className: 'fa fa-calculator fa-lg' }),
+        ' |',
+        React.createElement('i', { className: 'fa fa-wikipedia-w fa-lg' }),
+        ' |',
+        React.createElement('i', { className: 'fa fa-camera-retro fa-lg' })
+      ),
+      React.createElement(
+        'h4',
         null,
         ' Notes '
-      ),
-      React.createElement('input', { id: 'new-note', placeholder: 'Take new note', autoFocus: true, onKeyUp: this.handleValueChange })
+      )
     );
   }
 });
@@ -117,18 +137,18 @@ var NoteMain = React.createClass({
     return React.createElement(
       'section',
       { id: 'main' },
-      React.createElement('input', { id: 'toggle-all', type: 'checkbox', onChange: this.toggleAll }),
-      React.createElement(
-        'label',
-        { htmlFor: 'toggle-all' },
-        'Mark all as complete'
-      ),
       React.createElement(
         'ul',
         { id: 'todo-list', className: 'list-group' },
         filteredList.map(function (item) {
           return React.createElement(NoteItem, { label: item.label, id: item.key, key: item.key });
         })
+      ),
+      React.createElement('input', { id: 'toggle-all', type: 'checkbox', onChange: this.toggleAll }),
+      React.createElement(
+        'label',
+        { htmlFor: 'toggle-all' },
+        'Mark all as complete'
       )
     );
   }

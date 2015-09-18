@@ -88,8 +88,20 @@ var NoteHeader = React.createClass({
   render: function() {
     return (
       <header id="header">
-        <h1> Notes </h1>
-        <input id="new-note" placeholder="Take new note" autoFocus onKeyUp={this.handleValueChange} />
+        <div className="input-group">
+          <span className="input-group-addon" id="basic-addon1"><i className="fa fa-sticky-note-o"></i></span>
+          <input id="new-note" className="form-control" placeholder="keyin something ..." autoFocus onKeyUp={this.handleValueChange} />
+        </div>
+
+        <div>
+            <i className="fa fa-sticky-note-o fa-lg"></i> |
+            <i className="fa fa-calculator fa-lg"></i> |
+            <i className="fa fa-wikipedia-w fa-lg"></i> |
+            <i className="fa fa-camera-retro fa-lg"></i>
+        </div>
+
+        <h4> Notes </h4>
+
       </header>
     );
   }
@@ -103,13 +115,14 @@ var NoteMain = React.createClass({
     var filteredList = this.props.list;
     return (
       <section id="main" >
-          <input id="toggle-all" type="checkbox" onChange={this.toggleAll} />
-          <label htmlFor="toggle-all">Mark all as complete</label>
           <ul id="todo-list" className="list-group">
               { filteredList.map(function(item){
                   return <NoteItem label={item.label}  id={item.key} key={item.key}/>;
               })}
           </ul>
+
+          <input id="toggle-all" type="checkbox" onChange={this.toggleAll} />
+          <label htmlFor="toggle-all">Mark all as complete</label>
       </section>
     );
   }
