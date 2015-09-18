@@ -58,7 +58,7 @@ var NoteListStore = Reflux.createStore({
 var NoteItem = React.createClass({
   render: function(){
     return (
-      <li className="list-group-item">
+      <li className="note-item">
         <div className="view">
           <label onDoubleClick={this.handleEditStart}>{this.props.label}</label>
           <button className="distroy" onClick={this.handleDestroy}></button>
@@ -105,22 +105,12 @@ var NoteMain = React.createClass({
       <section id="main" >
           <input id="toggle-all" type="checkbox" onChange={this.toggleAll} />
           <label htmlFor="toggle-all">Mark all as complete</label>
-          <ul id="todo-list" className="list-group">
+          <ul id="todo-list">
               { filteredList.map(function(item){
                   return <NoteItem label={item.label}  id={item.key} key={item.key}/>;
               })}
           </ul>
       </section>
-    );
-  }
-});
-
-var CalculatorMain = React.createClass({
-  render: function(){
-
-    return(
-        <div id="calculator">
-        </div>
     );
   }
 });
@@ -134,7 +124,6 @@ var NoteApp = React.createClass({
       <div>
       <NoteHeader> </NoteHeader>
       <NoteMain list={this.state.list}> </NoteMain>
-      <CalculatorMain />
       </div>
     );
     // return <h1>Hello react {this.props.name}</h1>;

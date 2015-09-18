@@ -58,7 +58,7 @@ var NoteItem = React.createClass({
   render: function render() {
     return React.createElement(
       'li',
-      { className: 'note-item' },
+      { className: 'list-group-item' },
       React.createElement(
         'div',
         { className: 'view' },
@@ -125,12 +125,21 @@ var NoteMain = React.createClass({
       ),
       React.createElement(
         'ul',
-        { id: 'todo-list' },
+        { id: 'todo-list', className: 'list-group' },
         filteredList.map(function (item) {
           return React.createElement(NoteItem, { label: item.label, id: item.key, key: item.key });
         })
       )
     );
+  }
+});
+
+var CalculatorMain = React.createClass({
+  displayName: 'CalculatorMain',
+
+  render: function render() {
+
+    return React.createElement('div', { id: 'calculator' });
   }
 });
 
@@ -153,7 +162,8 @@ var NoteApp = React.createClass({
         NoteMain,
         { list: this.state.list },
         ' '
-      )
+      ),
+      React.createElement(CalculatorMain, null)
     );
     // return <h1>Hello react {this.props.name}</h1>;
   }
