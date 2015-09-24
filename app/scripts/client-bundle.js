@@ -3,91 +3,32 @@
 
 var React = require('react');
 var Reflux = require('reflux');
-
 var _ = require('lodash');
+// var math = require('mathjs');
 
-var noteCounter = 0,
-    localStorageKey = "note";
+var CalculatorActions = Reflux.createActions(["calculateResult", "clearInput", "viewHistory"]);
 
-function getItemByKey(list, itemKey) {
-  return _.find(list, function (item) {
-    return item.key === itemKey;
-  });
-}
+var CalculatorStore = Reflux.createStore({
+  listenables: [CalculatorActions],
 
-var NoteActions = Reflux.createActions(["toggleItem", "toggleAllItem", "addItem", "removeItem", "clearCompleted", "editItem"]);
-
-var NoteListStore = Reflux.createStore({
-  listenables: [NoteActions],
-  onAddItem: function onAddItem(label) {
-    this.updateList([{
-      key: noteCounter++,
-      created: new Date(),
-      isComplete: false,
-      label: label
-    }].concat(this.list));
-    console.log("add item!");
-  },
-  updateList: function updateList(list) {
-    localStorage.setItem(localStorageKey, JSON.stringify(list));
-    this.list = list;
-    this.trigger(list);
-  },
-  getInitialState: function getInitialState() {
-    var loadedList = localStorage.getItem(localStorageKey);
-    if (!loadedList) {
-      this.list = [{
-        key: noteCounter++,
-        created: new Date(),
-        isComplete: false,
-        label: 'Rule the web'
-      }];
-    } else {
-      this.list = _.map(JSON.parse(loadedList), function (item) {
-        item.key = noteCounter++;
-        return item;
-      });
-    }
-    return this.list;
-  }
-});
-
-var NoteItem = React.createClass({
-  displayName: 'NoteItem',
-
-  render: function render() {
-    return React.createElement(
-      'li',
-      { className: 'list-group-item' },
-      React.createElement(
-        'div',
-        { className: 'view' },
-        React.createElement(
-          'label',
-          { onDoubleClick: this.handleEditStart },
-          this.props.label
-        ),
-        React.createElement('button', { className: 'distroy', onClick: this.handleDestroy })
-      )
-    );
+  onCalculateResult: function onCalculateResult(label) {
+    var result = eval(label);
+    console.log("calculate result:");
   }
 });
 
 var NoteHeader = React.createClass({
   displayName: 'NoteHeader',
 
-  propTypes: {
-    label: React.PropTypes.string.isRequired,
-    id: React.PropTypes.number
-  },
+  listenables: [CalculatorActions],
   handleValueChange: function handleValueChange(evt) {
     var text = evt.target.value;
-    //We pressed enter, if text isn't empty we blur the field which will cause a save
+    //We pressed enter, calculate the result
     if (evt.which === 13 && text) {
-      NoteActions.addItem(text);
-      evt.target.value = '';
+      CalculatorActions.calculateResult(text);
+      evt.target.value = text + ' = ' + eval(text);
     }
-    //We pressed escape, set editing to false before blurring so we won't save
+    //We pressed escape, clear the input area
     else if (evt.which === 27) {
         evt.target.value = '';
       }
@@ -126,70 +67,314 @@ var NoteHeader = React.createClass({
   }
 });
 
-var NoteMain = React.createClass({
-  displayName: 'NoteMain',
+var CalculatorBoard = React.createClass({
+  displayName: 'CalculatorBoard',
 
-  propTypes: {
-    list: React.PropTypes.arrayOf(React.PropTypes.object).isRequired
-  },
   render: function render() {
-    var filteredList = this.props.list;
     return React.createElement(
-      'section',
-      { id: 'main' },
+      'div',
+      { className: 'alert alert-success' },
       React.createElement(
-        'ul',
-        { id: 'todo-list', className: 'list-group' },
-        filteredList.map(function (item) {
-          return React.createElement(NoteItem, { label: item.label, id: item.key, key: item.key });
-        })
-      ),
-      React.createElement('input', { id: 'toggle-all', type: 'checkbox', onChange: this.toggleAll }),
-      React.createElement(
-        'label',
-        { htmlFor: 'toggle-all' },
-        'Mark all as complete'
+        'table',
+        { className: 'table' },
+        React.createElement(
+          'tr',
+          null,
+          React.createElement(
+            'td',
+            null,
+            React.createElement(
+              'button',
+              { href: '#', className: 'btn btn-block', 'data-constant': 'SIN', 'data-key': '115' },
+              'sin'
+            )
+          ),
+          React.createElement(
+            'td',
+            null,
+            React.createElement(
+              'button',
+              { href: '#', className: 'btn btn-block', 'data-constant': 'COS', 'data-key': '99' },
+              'cos'
+            ),
+            ' '
+          ),
+          React.createElement(
+            'td',
+            null,
+            React.createElement(
+              'button',
+              { href: '#', className: 'btn btn-block', 'data-constant': 'MOD', 'data-key': '109' },
+              'md'
+            ),
+            ' '
+          ),
+          React.createElement(
+            'td',
+            { colSpan: '2' },
+            React.createElement(
+              'button',
+              { href: '#', className: 'btn btn-block btn-danger', 'data-method': 'reset', 'data-key': '8' },
+              'C'
+            )
+          )
+        ),
+        React.createElement(
+          'tr',
+          null,
+          React.createElement(
+            'td',
+            null,
+            ' ',
+            React.createElement(
+              'button',
+              { href: '#', className: 'btn btn-block', 'data-key': '55' },
+              '7'
+            )
+          ),
+          React.createElement(
+            'td',
+            null,
+            ' ',
+            React.createElement(
+              'button',
+              { href: '#', className: 'btn btn-block', 'data-key': '56' },
+              '8'
+            )
+          ),
+          React.createElement(
+            'td',
+            null,
+            ' ',
+            React.createElement(
+              'button',
+              { href: '#', className: 'btn btn-block', 'data-key': '57' },
+              '9'
+            )
+          ),
+          React.createElement(
+            'td',
+            null,
+            ' ',
+            React.createElement(
+              'button',
+              { href: '#', className: 'btn btn-block', 'data-constant': 'BRO', 'data-key': '40' },
+              '('
+            )
+          ),
+          React.createElement(
+            'td',
+            null,
+            ' ',
+            React.createElement(
+              'button',
+              { href: '#', className: 'btn btn-block', 'data-constant': 'BRC', 'data-key': '41' },
+              ')'
+            )
+          )
+        ),
+        React.createElement(
+          'tr',
+          null,
+          React.createElement(
+            'td',
+            null,
+            ' ',
+            React.createElement(
+              'button',
+              { href: '#', className: 'btn btn-block', 'data-key': '52' },
+              '4'
+            ),
+            ' '
+          ),
+          React.createElement(
+            'td',
+            null,
+            ' ',
+            React.createElement(
+              'button',
+              { href: '#', className: 'btn btn-block', 'data-key': '53' },
+              '5'
+            ),
+            ' '
+          ),
+          React.createElement(
+            'td',
+            null,
+            ' ',
+            React.createElement(
+              'button',
+              { href: '#', className: 'btn btn-block', 'data-key': '54' },
+              '6'
+            ),
+            ' '
+          ),
+          React.createElement(
+            'td',
+            null,
+            ' ',
+            React.createElement(
+              'button',
+              { href: '#', className: 'btn btn-block', 'data-constant': 'MIN', 'data-key': '45' },
+              '-'
+            ),
+            ' '
+          ),
+          React.createElement(
+            'td',
+            null,
+            ' ',
+            React.createElement(
+              'button',
+              { href: '#', className: 'btn btn-block', 'data-constant': 'SUM', 'data-key': '43' },
+              '+'
+            ),
+            ' '
+          )
+        ),
+        React.createElement(
+          'tr',
+          null,
+          React.createElement(
+            'td',
+            null,
+            ' ',
+            React.createElement(
+              'button',
+              { href: '#', className: 'btn btn-block', 'data-key': '49' },
+              '1'
+            )
+          ),
+          React.createElement(
+            'td',
+            null,
+            ' ',
+            React.createElement(
+              'button',
+              { href: '#', className: 'btn btn-block', 'data-key': '50' },
+              '2'
+            )
+          ),
+          React.createElement(
+            'td',
+            null,
+            ' ',
+            React.createElement(
+              'button',
+              { href: '#', className: 'btn btn-block', 'data-key': '51' },
+              '3'
+            )
+          ),
+          React.createElement(
+            'td',
+            null,
+            ' ',
+            React.createElement(
+              'button',
+              { href: '#', className: 'btn btn-block', 'data-constant': 'DIV', 'data-key': '47' },
+              '/'
+            )
+          ),
+          React.createElement(
+            'td',
+            null,
+            ' ',
+            React.createElement(
+              'button',
+              { href: '#', className: 'btn btn-block', 'data-constant': 'MULT', 'data-key': '42' },
+              '*'
+            )
+          )
+        ),
+        React.createElement(
+          'tr',
+          null,
+          React.createElement(
+            'td',
+            null,
+            React.createElement(
+              'button',
+              { href: '#', className: 'btn btn-block', 'data-key': '46' },
+              '.'
+            )
+          ),
+          React.createElement(
+            'td',
+            null,
+            React.createElement(
+              'button',
+              { href: '#', className: 'btn btn-block', 'data-key': '48' },
+              '0'
+            )
+          ),
+          React.createElement(
+            'td',
+            null,
+            React.createElement(
+              'button',
+              { href: '#', className: 'btn btn-block', 'data-constant': 'PROC', 'data-key': '37' },
+              '%'
+            )
+          ),
+          React.createElement(
+            'td',
+            { colSpan: '2' },
+            React.createElement(
+              'button',
+              { href: '#', className: 'btn btn-block btn-primary', 'data-method': 'calculate', 'data-key': '61' },
+              '='
+            )
+          )
+        )
       )
     );
   }
 });
 
-var CalculatorMain = React.createClass({
-  displayName: 'CalculatorMain',
+var CalculatorHistory = React.createClass({
+  displayName: 'CalculatorHistory',
 
   render: function render() {
-
-    return React.createElement('div', { id: 'calculator' });
+    return React.createElement(
+      'div',
+      { 'class': 'well' },
+      React.createElement(
+        'legend',
+        null,
+        'History'
+      ),
+      React.createElement(
+        'div',
+        { id: 'calc-panel' },
+        React.createElement(
+          'div',
+          { id: 'calc-history' },
+          React.createElement('ol', { id: 'calc-history-list' })
+        )
+      )
+    );
   }
 });
 
-var NoteApp = React.createClass({
-  displayName: 'NoteApp',
+var CalculatorApp = React.createClass({
+  displayName: 'CalculatorApp',
 
   // this will cause setState({list:updatedlist}) whenever the store does trigger(updatelist)
-  mixins: [Reflux.connect(NoteListStore, "list")],
+  // mixins: [Reflux.connect(NoteListStore, "list")],
 
   render: function render() {
     return React.createElement(
       'div',
       null,
-      React.createElement(
-        NoteHeader,
-        null,
-        ' '
-      ),
-      React.createElement(
-        NoteMain,
-        { list: this.state.list },
-        ' '
-      ),
-      React.createElement(CalculatorMain, null)
+      React.createElement(NoteHeader, null),
+      React.createElement(CalculatorBoard, null),
+      React.createElement(CalculatorHistory, null)
     );
     // return <h1>Hello react {this.props.name}</h1>;
   }
 });
 
-React.render(React.createElement(NoteApp, { name: 'React note' }), document.getElementById('app'));
+React.render(React.createElement(CalculatorApp, { name: 'React calculator' }), document.getElementById('app'));
 
 },{"lodash":3,"react":158,"reflux":175}],2:[function(require,module,exports){
 // shim for using process in browser

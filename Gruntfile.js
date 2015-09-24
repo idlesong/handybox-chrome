@@ -103,7 +103,7 @@ module.exports = function (grunt) {
           transform: [["babelify", { "stage": 0 }]]
         },
         files: {
-          './app/scripts/client-bundle.js': './app/react/app.jsx'
+          './app/scripts/client-bundle.js': './app/react/appCalculator.jsx'
         }
       }
     },
