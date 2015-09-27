@@ -1,7 +1,9 @@
-var React = require('react');
-var Reflux = require('reflux');
-var _ = require('lodash');
-// var math = require('mathjs');
+import React from 'react';
+import Reflux from 'reflux';
+import * as _  from 'lodash';
+import { Router, Route, Link } from 'react-router';
+
+import AppNavBar from './appNavBar.jsx';
 
 var CalculatorActions = Reflux.createActions([
   "calculateResult",
@@ -40,13 +42,7 @@ var NoteHeader = React.createClass({
           <input id="new-note" className="form-control" placeholder="keyin something ..." autoFocus onKeyUp={this.handleValueChange} />
         </div>
 
-        <div>
-            <i className="fa fa-sticky-note-o fa-lg"></i> |
-            <i className="fa fa-calculator fa-lg"></i> |
-            <i className="fa fa-wikipedia-w fa-lg"></i> |
-            <i className="fa fa-camera-retro fa-lg"></i>
-        </div>
-
+        <AppNavBar />
         <h4> Notes </h4>
 
       </header>
@@ -132,7 +128,9 @@ var CalculatorApp = React.createClass({
   }
 });
 
-React.render(
-  <CalculatorApp name="React calculator" />,
-  document.getElementById('app')
-);
+// React.render(
+//   <CalculatorApp name="React calculator" />,
+//   document.getElementById('app')
+// );
+
+export default CalculatorApp;
